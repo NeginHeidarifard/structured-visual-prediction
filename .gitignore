@@ -5,6 +5,9 @@ __pycache__/
 data/dataset/
 outputs/figures/*.png
 !outputs/figures/test_frames.png
+!outputs/figures/mae_comparison.png
+!outputs/figures/degradation_analysis.png
+!outputs/figures/decision_accuracy.png
+outputs/*.pkl
 .DS_Store
 *.log
-HANDOFF.md
