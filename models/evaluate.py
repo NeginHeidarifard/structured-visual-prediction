@@ -1,5 +1,5 @@
 """
-Day 3: Evaluate both trained models on all test splits.
+File Evaluate both trained models on all test splits.
 Compares Model A (CNN Baseline) vs Model B (Structured Predictor)
 under base, appearance, noise, and dynamics distribution shifts.
 """

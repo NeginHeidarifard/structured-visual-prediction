@@ -1,5 +1,5 @@
 """
-Day 4: Generate publication-quality figures from evaluation results.
+File Generate publication-quality figures from evaluation results.
 """
 
 import matplotlib

@@ -1,5 +1,5 @@
 """
-Day 2: Train both neural models on the training set.
+File Train both neural models on the training set.
 Saves trained weights to models/checkpoints/
 """
 

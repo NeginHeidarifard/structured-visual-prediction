@@ -1,5 +1,5 @@
 """
-Day 2: Two Models for Comparison
+File Two Models for Comparison
 Model A: CNN Baseline (4 RGB frames -> landing_x)
 Model B: Structured Predictor (4 RGB frames -> physical state -> landing_x)
 

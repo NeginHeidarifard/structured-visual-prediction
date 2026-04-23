@@ -1,5 +1,5 @@
 """
-Day 2: Classical baseline (no learning).
+File Classical baseline (no learning).
 Detects ball centroid in each of 4 frames via color thresholding,
 estimates velocity, and extrapolates landing_x with simple physics.
 

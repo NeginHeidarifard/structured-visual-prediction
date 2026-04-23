@@ -1,6 +1,6 @@
 """
 2D Physics Environment for Structured Visual Prediction under Distribution Shift
-Day 1: Environment + Renderer
+File Environment + Renderer
 """
 
 import numpy as np
