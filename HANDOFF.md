@@ -4,21 +4,19 @@
 
 **Author:** Negin Heidarifard
 **Repository:** https://github.com/NeginHeidarifard/structured-visual-prediction
-**Last updated:** April 23, 2026
 
 ---
 
 ## 1. Research Question
 
-Do structured visual representations — encoding explicit physical state
-(position, velocity) — lead to more robust downstream robotic decisions
-under distribution shift, compared to unstructured CNN models trained on
-raw pixels?
+Do structured visual representations — encoding explicit physical state (position, velocity) — lead to more robust downstream robotic decisions under distribution shift, compared to unstructured CNN models trained on raw pixels?
 
 ---
 
 ## 2. Project Structure
-/mnt/e/Project/
+
+```
+Project/
 ├── env/
 │   └── physics_env.py             # 2D physics simulator + renderer
 ├── data/
@@ -38,8 +36,8 @@ raw pixels?
 │   ├── decision_results.pkl
 │   └── figures/                   # all generated plots
 ├── HANDOFF.md
-├── project_report.html
 └── .gitignore
+```
 
 ---
 
@@ -51,6 +49,7 @@ raw pixels?
 - Dependencies: numpy, matplotlib, torch, torchvision, tqdm
 
 Install:
+
 ```bash
 pip install numpy matplotlib torch torchvision tqdm
 ```
@@ -76,6 +75,7 @@ Each episode is a dict:
 - `restitution`: float
 
 Regenerate with:
+
 ```bash
 python data/generate_dataset.py
 ```
@@ -84,23 +84,23 @@ python data/generate_dataset.py
 
 ## 5. Models
 
-Three models implemented under identical training conditions:
+Three models implemented under identical training conditions.
 
 **Model C — Classical baseline (no learning)**
-Ball centroid via colour thresholding, velocity from frame differences,
-landing_x via ballistic extrapolation. Interpretable sanity check.
+Ball centroid via colour thresholding, velocity from frame differences, landing_x via ballistic extrapolation. Interpretable sanity check.
 
 **Model A — CNN Baseline (unstructured)**
 4 frames stacked (12 × 128 × 128) → 4-stage CNN → FC regressor → landing_x.
 
 **Model B — Structured Predictor (proposed)**
-4 frames → CNN state extractor → (x, y, vx, vy) → differentiable
-ballistic rollout → landing_x. Physics-constrained bottleneck.
+4 frames → CNN state extractor → (x, y, vx, vy) → differentiable ballistic rollout → landing_x. Physics-constrained bottleneck.
 
 Train with:
+
 ```bash
 python models/train.py
 ```
+
 Training time: ~10 min on CPU (10 epochs, batch 32).
 
 ---
@@ -108,16 +108,19 @@ Training time: ~10 min on CPU (10 epochs, batch 32).
 ## 6. Evaluation
 
 Run MAE evaluation on all test splits:
+
 ```bash
 python models/evaluate.py
 ```
 
 Run task-level decision accuracy:
+
 ```bash
 python models/decision.py
 ```
 
 Generate figures:
+
 ```bash
 python models/visualize.py
 python models/visualize_decisions.py
@@ -138,11 +141,11 @@ python models/visualize_decisions.py
 
 ### Relative Degradation (MAE_shift / MAE_base)
 
-| Shift      | CNN   | Structured |
-|------------|-------|------------|
-| Appearance | 10.18x| 6.07x      |
-| Noise      | 1.17x | 1.12x      |
-| Dynamics   | 0.86x | 0.95x      |
+| Shift      | CNN    | Structured |
+|------------|--------|------------|
+| Appearance | 10.18x | 6.07x      |
+| Noise      | 1.17x  | 1.12x      |
+| Dynamics   | 0.86x  | 0.95x      |
 
 ### Decision Accuracy
 
@@ -157,31 +160,21 @@ python models/visualize_decisions.py
 
 ## 8. Key Findings
 
-1. **Structured representation improves appearance robustness.**
-   CNN degrades 10.18x under appearance shift; Structured degrades 6.07x.
-   A 40% relative improvement at regression level.
+1. **Structured representation improves appearance robustness.** CNN degrades 10.18x under appearance shift; Structured degrades 6.07x. A 40% relative improvement at regression level.
 
-2. **Regression improvement does not always translate to decision
-   accuracy.** Under appearance shift, both models collapse to ~52.5%
-   decision accuracy (near random). This motivates investigating the
-   decision module and threshold calibration.
+2. **Regression improvement does not always translate to decision accuracy.** Under appearance shift, both models collapse to ~52.5% decision accuracy (near random). This motivates investigating the decision module and threshold calibration.
 
-3. **Both models are robust to noise and mild dynamics shifts.**
-   Degradation is under 20% in both cases.
+3. **Both models are robust to noise and mild dynamics shifts.** Degradation is under 20% in both cases.
 
-4. **In-distribution cost of structure is minimal.**
-   Model B trails Model A by 0.012 MAE on base — a negligible tax for
-   substantial out-of-distribution robustness gain.
+4. **In-distribution cost of structure is minimal.** Model B trails Model A by 0.012 MAE on base — a negligible tax for substantial out-of-distribution robustness gain.
 
 ---
 
 ## 9. Known Issues
 
 - WSL has no display; matplotlib must use `Agg` backend.
-- GitHub auth: password authentication is disabled. Use Personal Access
-  Token or `gh auth login`.
-- The dataset folder is git-ignored due to size. Regenerate locally with
-  `python data/generate_dataset.py`.
+- GitHub auth: password authentication is disabled. Use Personal Access Token or `gh auth login`.
+- The dataset folder is git-ignored due to size. Regenerate locally with `python data/generate_dataset.py`.
 
 ---
 
@@ -191,12 +184,3 @@ python models/visualize_decisions.py
 - Extracted-state visualisation overlaid on input frames.
 - Error-vs-shift-severity curves.
 - README.md with reproduction steps.
-- Make repository public on submission.
-
----
-
-## 11. Context
-
-This project is part of a PhD application to Inria Paris (supervisor:
-Raoul de Charette, topic: Simulatable Physics-aware World Models).
-Application deadline: 
