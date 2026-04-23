@@ -28,8 +28,8 @@ downstream robotic decisions under distribution shift vs raw-pixel CNN models?
    - test_appearance: 200 (color/texture shift)
    - test_noise: 200 (gaussian pixel noise)
    - test_dynamics: 200 (gravity/friction changed)
-3. Output: data/dataset/*.pkl files
-4. GitHub: pushed to structured-visual-prediction repo
+3. Output: data/dataset/*.pkl files (git-ignored, regenerate with script)
+4. GitHub: repo initialized and pushed
 
 ## DAY 2 - NEXT
 Build two models:
@@ -52,11 +52,13 @@ README + 1-page technical report for PhD application.
 ## DAY 10
 Clean repo, make public, attach to application.
 
+## AUTHENTICATION
+GitHub authentication handled via Personal Access Token or gh auth login.
+
 ## KNOWN ISSUES
 - WSL: never use plt.show(), always Agg backend
-- Git auth: password disabled, use Personal Access Token
 - Always run from /mnt/e/Project
-- Do NOT commit data/dataset/ to git (large files)
+- Do NOT commit data/dataset/ to git (large files, listed in .gitignore)
 
 ## DATASET FORMAT
 Each .pkl file: list of episodes

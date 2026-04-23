@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+data/dataset/
+outputs/figures/*.png
+!outputs/figures/test_frames.png
+.DS_Store
+*.log
