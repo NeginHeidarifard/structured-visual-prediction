@@ -35,7 +35,6 @@ structured-visual-prediction/
 │   ├── decision_results.pkl
 │   └── figures/                   # all generated plots
 ├── TECHNICAL_NOTE.md
-├── HANDOFF.md
 └── .gitignore
 ```
 
@@ -187,8 +186,6 @@ python models/visualize_decisions.py
 - Multi-seed runs with mean ± std reported.
 - Extracted-state visualisation overlaid on input frames to probe what the structured bottleneck has actually learned.
 - Error-vs-shift-severity curves (sweeping colour distance, noise level, gravity perturbation).
-- README with full reproduction steps.
-
 ---
 
 ## 11. Context
