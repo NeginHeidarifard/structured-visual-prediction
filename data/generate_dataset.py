@@ -1,6 +1,6 @@
 """
 Dataset Generator
-Generates train and test (shifted) episodes.
+Generates train, calibration, and test (shifted) episodes.
 Run: python data/generate_dataset.py
 """
 
@@ -13,6 +13,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from env.physics_env import PhysicsEnv
 
 N_TRAIN = 1000
+N_CALIB_BASE = 200
 N_TEST_BASE = 200       # same domain as train
 N_TEST_SHIFT_APP = 200  # appearance shift (ball color + bg)
 N_TEST_SHIFT_NOISE = 200  # sensor noise
@@ -35,7 +36,6 @@ def generate_episodes(
     env = PhysicsEnv(**env_kwargs)
 
     for i in range(n_episodes):
-        # Randomize dynamics slightly within range
         env.restitution = np.random.uniform(*restitution_range)
 
         env.reset()
@@ -44,10 +44,10 @@ def generate_episodes(
         frames, states = env.rollout(n_steps=N_STEPS, render_kwargs=render_kwargs)
 
         if len(frames) < N_INPUT_FRAMES:
-            continue  # skip very short episodes
+            continue
 
-        input_frames = np.stack(frames[:N_INPUT_FRAMES])  # (4, H, W, 3)
-        gt_landing_x = landing_x / env.width              # normalize to [0, 1]
+        input_frames = np.stack(frames[:N_INPUT_FRAMES])
+        gt_landing_x = landing_x / env.width
 
         episodes.append({
             "input_frames": input_frames,
@@ -69,6 +69,14 @@ train_data = generate_episodes(
     render_kwargs={"ball_color": "red", "bg_color": "white"},
     restitution_range=(0.70, 0.80),
     split_name="train",
+)
+
+print("\n=== Generating CALIBRATION (base) set ===")
+calib_base = generate_episodes(
+    N_CALIB_BASE,
+    render_kwargs={"ball_color": "red", "bg_color": "white"},
+    restitution_range=(0.70, 0.80),
+    split_name="calib_base",
 )
 
 print("\n=== Generating TEST (base) set ===")
@@ -99,13 +107,14 @@ print("\n=== Generating TEST (dynamics shift) set ===")
 test_dyn = generate_episodes(
     N_TEST_SHIFT_DYN,
     render_kwargs={"ball_color": "red", "bg_color": "white"},
-    restitution_range=(0.55, 0.65),   # different restitution
+    restitution_range=(0.55, 0.65),
     split_name="test_dynamics",
 )
 
 # Save all splits
 splits = {
     "train": train_data,
+    "calib_base": calib_base,
     "test_base": test_base,
     "test_appearance": test_app,
     "test_noise": test_noise,
@@ -116,7 +125,7 @@ for name, data in splits.items():
     path = os.path.join(SAVE_DIR, f"{name}.pkl")
     with open(path, "wb") as f:
         pickle.dump(data, f)
-    print(f"Saved {name}: {len(data)} episodes → {path}")
+    print(f"Saved {name}: {len(data)} episodes -> {path}")
 
 print("\nDataset generation complete.")
 print(f"Total episodes: {sum(len(v) for v in splits.values())}")

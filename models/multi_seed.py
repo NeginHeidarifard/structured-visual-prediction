@@ -1,7 +1,7 @@
 """
 Multi-seed evaluation with threshold calibration.
 Trains both models N times with different seeds, reports mean +/- std.
-Also calibrates the decision threshold on the base split.
+Calibrates the decision threshold on a held-out calibration split.
 """
 
 import pickle
@@ -15,7 +15,7 @@ from tqdm import tqdm
 from structured_predictor import CNNBaseline, StructuredPredictor
 from train import BallDataset
 
-N_SEEDS = 3
+N_SEEDS = 5
 EPOCHS = 10
 LR = 1e-3
 BATCH = 32
@@ -96,10 +96,10 @@ def run_one_seed(seed, train_loader, test_loaders, device):
             "preds_a": preds_a, "preds_b": preds_b, "targets": targets,
         }
 
-    # calibrate threshold on test_base
-    base_preds_a = results["test_base"]["preds_a"]
-    base_preds_b = results["test_base"]["preds_b"]
-    base_targets = results["test_base"]["targets"]
+    # calibrate threshold on calib_base (held-out)
+    base_preds_a = results["calib_base"]["preds_a"]
+    base_preds_b = results["calib_base"]["preds_b"]
+    base_targets = results["calib_base"]["targets"]
 
     thresh_a, _ = calibrate_threshold(base_preds_a, base_targets)
     thresh_b, _ = calibrate_threshold(base_preds_b, base_targets)
@@ -123,7 +123,7 @@ def main():
     train_ds = BallDataset("data/dataset/train.pkl")
     train_loader = DataLoader(train_ds, batch_size=BATCH, shuffle=True, num_workers=0)
 
-    splits = ["test_base", "test_appearance", "test_noise", "test_dynamics"]
+    splits = ["calib_base", "test_base", "test_appearance", "test_noise", "test_dynamics"]
     test_loaders = {}
     for s in splits:
         ds = BallDataset(f"data/dataset/{s}.pkl")
