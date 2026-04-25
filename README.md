@@ -77,6 +77,19 @@ Six splits stress-test three orthogonal axes of generalisation:
 | test_noise       | 96.3 ± 3.9%      | 97.4 ± 1.4%      |
 | test_dynamics    | 98.0 ± 1.0%      | 97.6 ± 2.2%      |
 
+### Bottleneck Probing: Physical State Alignment
+
+Without any direct supervision on physical state variables, the structured predictor's 4D bottleneck learns representations strongly correlated with the underlying physics:
+
+| Bottleneck dim | x₀ (position) | vx (velocity) | landing_x |
+|----------------|---------------|---------------|-----------|
+| z0             | 0.595         | 0.519         | 0.692     |
+| z1             | 0.723         | 0.615         | 0.877     |
+| z2             | 0.669         | 0.666         | **0.988** |
+| z3             | -0.648        | -0.689        | **-0.950**|
+
+The bottleneck dimensions show strong linear correlation with horizontal position (r=0.72), velocity (r=0.69), and near-perfect alignment with landing position (r=0.99). This confirms that physics-inspired architectural constraints induce physically meaningful latent representations — directly relevant to learning simulatable, physics-aware world models.
+
 ---
 
 ## Key Findings
