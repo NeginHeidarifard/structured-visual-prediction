@@ -26,6 +26,7 @@ python models/decision.py                # decision accuracy (fixed threshold)
 python models/multi_seed.py              # 5-seed eval + held-out threshold calibration
 python models/visualize.py               # MAE & degradation figures
 python models/visualize_decisions.py     # decision accuracy figure
+python models/analyze_bottleneck_alignment.py  # bottleneck probing
 ```
 
 Figures are written to `outputs/figures/`. Numerical results are pickled in `outputs/`.
@@ -79,7 +80,7 @@ Six splits stress-test three orthogonal axes of generalisation:
 
 ### Bottleneck Probing: Physical State Alignment
 
-Without any direct supervision on physical state variables, the structured predictor's 4D bottleneck learns representations strongly correlated with the underlying physics:
+Without any direct supervision on physical state variables, the structured predictor's 4D bottleneck learns representations correlated with the underlying physics:
 
 | Bottleneck dim | x₀ (position) | vx (velocity) | landing_x |
 |----------------|---------------|---------------|-----------|
@@ -88,7 +89,7 @@ Without any direct supervision on physical state variables, the structured predi
 | z2             | 0.669         | 0.666         | **0.988** |
 | z3             | -0.648        | -0.689        | **-0.950**|
 
-The bottleneck dimensions show strong linear correlation with horizontal position (r=0.72), velocity (r=0.69), and near-perfect alignment with landing position (r=0.99). This confirms that physics-inspired architectural constraints induce physically meaningful latent representations — directly relevant to learning simulatable, physics-aware world models.
+The bottleneck dimensions show strong linear correlations with horizontal position, horizontal velocity, and landing position in one representative run. This preliminary result suggests that the structured predictor learns a compact representation partially aligned with physical state, even without direct physical-state supervision. This is a relevant first diagnostic toward simulatable, physics-aware world representations, but should be validated across multiple seeds and shifted test splits.
 
 ---
 
@@ -100,11 +101,20 @@ Across 5 random seeds, the structured predictor achieves lower appearance-shift 
 
 ---
 
+## Relevance to Physics-Aware World Models
+
+This benchmark is a diagnostic step toward physics-aware world representation learning. Instead of training a large video world model, it isolates a simpler question: whether imposing a structured bottleneck and physics-inspired rollout encourages visual predictors to learn representations that are more robust under shift and partially aligned with explicit physical variables.
+
+The results suggest that structured prediction improves appearance-shift regression robustness, while bottleneck probing shows correlations with physical variables such as horizontal velocity and landing position. The decision-level instability shows that predictive accuracy alone is not sufficient; controllable and decision-aware interfaces are needed to translate representations into reliable actions.
+
+---
+
 ## Limitations
 
 - 5-seed evaluation; decision accuracy variance under appearance shift remains high.
 - Decision thresholds are calibrated on a held-out in-distribution split (`calib_base`); calibration may not transfer well to shifted domains.
 - The binary threshold decision rule is inherently sensitive to small prediction biases near the decision boundary.
+- Bottleneck probing was performed on one representative seed; multi-seed validation is needed.
 - The environment is a controlled 2D toy setting; generalisation to 3D dynamics is out of scope.
 
 ---
@@ -125,6 +135,7 @@ TECHNICAL_NOTE.md    Fuller write-up with observations and limitations
 ## Future Work
 
 - Decision-aware training objectives optimising action correctness directly.
+- Multi-seed bottleneck probing to validate physical alignment stability.
 - Larger shifted test sets to reduce decision accuracy variance.
 - Prediction bias and calibration transfer analysis under shift.
 - Continuous control interfaces replacing binary threshold decisions.
